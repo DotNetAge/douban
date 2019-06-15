@@ -7,11 +7,11 @@ class ProcessorTestCase(unittest.TestCase):
 
     def test_number_processor(self):
         tests_text = "共93.2人"
-        expected_text = '93.2'
+        expected = 93.2
         processor = Number()
 
         actual = processor([tests_text])
-        self.assertEqual(actual[0], expected_text)
+        self.assertEqual(actual[0], expected)
 
     def test_text_processor(self):
         tests_text = "<div>This is a text with some <b>html</b> tags</div>"
@@ -23,11 +23,11 @@ class ProcessorTestCase(unittest.TestCase):
 
     def test_price_processor(self):
         tests_text = "￥24.2 元"
-        expected_text = '24.2'
+        expected = 24.2
         processor = Price()
 
         actual = processor([tests_text])
-        self.assertEqual(actual[0], expected_text)
+        self.assertEqual(actual[0], expected)
 
     def test_date_processor(self):
         tests_text = "2015年2月3日"
@@ -35,4 +35,4 @@ class ProcessorTestCase(unittest.TestCase):
         processor = Date()
 
         actual = processor([tests_text])
-        self.assertEqual(actual[0], expected_text)
+        self.assertEqual(actual[0].strftime('%Y-%m-%dT%H:%M:%S'), expected_text)

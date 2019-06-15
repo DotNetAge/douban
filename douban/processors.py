@@ -31,7 +31,7 @@ class Date(Text):
                 dates.append(text)
             try:
                 date = DateDataParser().get_date_data(text)['date_obj']
-                dates.append(date.strftime(self.format))
+                dates.append(date)
             except ValueError:
                 pass
         return dates
@@ -48,7 +48,7 @@ class Number():
                 numbers.append(value)
             txt = _NUMERIC_ENTITIES.sub(lambda m: unichr(int(m.groups()[0])),value)
             numbers.append(_NUMBER_RE.findall(txt))
-        return list(chain(*numbers))
+        return list(map(lambda v: float(v) , list(chain(*numbers))))
 
 class Price():
     def __call__(self, values):
@@ -65,5 +65,5 @@ class Price():
                 if decimalpart[0] == "," and len(decimalpart) <= 3:
                     decimalpart = decimalpart.replace(",", ".")
                 value = "".join(parts + [decimalpart]).replace(",", "")
-                prices.append(value)
+                prices.append(float(value))
         return prices

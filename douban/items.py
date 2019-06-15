@@ -1,7 +1,7 @@
 # coding:utf-8
 
 from scrapy import Item, Field
-from .processors import Number, Date, Price, Text,CleanText
+from .processors import Number, Date, Price, Text, CleanText
 from scrapy.loader.processors import TakeFirst, Join
 
 
