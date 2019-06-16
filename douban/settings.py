@@ -1,21 +1,11 @@
 # -*- coding: utf-8 -*-
 
-# Scrapy settings for douban project
-#
-# For simplicity, this file contains only settings considered important or
-# commonly used. You can find more settings consulting the documentation:
-#
-#     https://doc.scrapy.org/en/latest/topics/settings.html
-#     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
-#     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
 BOT_NAME = 'doubanbook'
 
 SPIDER_MODULES = ['douban.spiders']
 NEWSPIDER_MODULE = 'douban.spiders'
 
-# Crawl responsibly by identifying yourself (and your website) on the user-agent
-USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/601.7.8 (KHTML, like Gecko) Version/9.1.3 Safari/537.86.7',
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
@@ -23,23 +13,36 @@ ROBOTSTXT_OBEY = False
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 CONCURRENT_REQUESTS = 1
 
-FEED_FORMAT = 'entity'  # 数据导出的格式
-FEED_EXPORTERS = {  # 关联导出格式与数据项导出器
-    'entity': 'douban.extensions.SQLItemExporter'
-}
+# Redis设置
+REDIS_URL = 'redis://127.0.0.1:6379/0'
+REDIS_HOST = "127.0.0.1"  # REDIS主机
+REDIS_PORT = 6379               # REDIS服务端口
+# REDIS_PASSWD = "***"          # 访问密码
+REDIS_DB = 0                    # 数据库索引号
+REDIS_START_URLS_KEY="spider:start_urls"  #用于读取REDIS中记录启动任务的KEY
 
-FEED_URI = 'sqlite:///test.db'  # 数据库的连接字符串
+#使用scrapy-redis中的去重组件
+DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
+# 使用scrapy-redis中的调度器
+SCHEDULER = "scrapy_redis.scheduler.Scheduler"
+# 允许暂停后,能保存进度
+SCHEDULER_PERSIST = True
 
-# 增加对sqlite，postgresql和mysql内种协议的存储端支持
-FEED_STORAGES = {
-    'sqlite': 'douban.extensions.SQLFeedStorage',
-    'postgresql': 'douban.extensions.SQLFeedStorage',
-    'mysql': 'douban.extensions.SQLFeedStorage'
+# 指定排序爬取地址时使用的队列
+# 默认的，按优先级排序（Scrapy默认），由sorted set实现的一种非FIFO、LIFO方式
+SCHEDULER_QUEUE_CLASS = 'scrapy_redis.queue.SpiderPriorityQueue'
+# 可选的，按先进先出排序（FIFO）
+# SCHEDULER_QUEUE_CLASS = 'scrapy_redis.queue.SpiderQueue'
+# 可选的，按后进先出排序（LIFO）
+# SCHEDULER_QUEUE_CLASS = 'scrapy_redis.queue.SpiderStack'
+
+ITEM_PIPELINES = {
+   'scrapy_redis.pipelines.RedisPipeline': 400
 }
 
 DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
-    'douban.middlewares.RandomProxyMiddleware': 501,
+    #'douban.middlewares.RandomProxyMiddleware': 501,
     'douban.middlewares.RandomUserAgentMiddleware': 800
 }
 
@@ -51,9 +54,6 @@ USER_AGENTS = [
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.5.6 (KHTML, like Gecko) Version/11.0.3 Safari/604.5.6'
 ]
 
-HTTP_PROXIES = [
-
-]
 
 COOKIES_ENABLED = False
 

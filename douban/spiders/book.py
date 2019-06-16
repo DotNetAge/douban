@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
-from scrapy.spiders import CrawlSpider, Rule
+# from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
 from ..items import BookItem
+from scrapy_redis.spiders import RedisCrawlSpider
+from scrapy.spiders import Rule
 
-
-class BookSpider(CrawlSpider):
+class BookSpider(RedisCrawlSpider):
     name = "doubanbook"
-    start_urls = ['https://book.douban.com/tag/']
+    # start_urls = ['https://book.douban.com/tag/']
     rules = (Rule(LinkExtractor(allow=('\/tag\/(.*?)')), follow=True),
              Rule(LinkExtractor(allow=('\/tag\/(.*?)\?start\='),
                                 tags=('link'), attrs=('href')), follow=True),

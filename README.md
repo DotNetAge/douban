@@ -23,3 +23,9 @@ $ scrapy crawl doubanbook
 ```
 $ python -m unittest
 ```
+
+运行redis容器
+
+```
+$ docker-compose up -d
+```
